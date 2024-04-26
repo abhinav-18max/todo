@@ -13,22 +13,50 @@ export class ProjectsService {
   ) {}
 
   async createProject(project: CreateProjectDto, user: User): Promise<Project> {
-    const newProject = new Project();
-    newProject.name = project.name;
-    newProject.user_id = user.id;
-    const proj = await this.projectRepository.save(newProject);
-    return proj;
+    try {
+      const newProject = new Project();
+      newProject.name = project.name;
+      newProject.user_id = user.id;
+      const proj = await this.projectRepository.save(newProject);
+      return proj;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
   }
 
   async updateProject(project: UpdateProjectDto, user: User): Promise<Project> {
-    const proj = await this.projectRepository.findOne({
-      where: {
-        id: project.id,
-        user_id: user.id,
-      },
-    });
-    proj.name = project.name;
-    await this.projectRepository.save(proj);
-    return proj;
+    try {
+      const proj = await this.projectRepository.findOne({
+        where: {
+          id: project.id,
+          user_id: user.id,
+        },
+      });
+      proj.name = project.name;
+      await this.projectRepository.save(proj);
+      return proj;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
+  }
+
+  async findProjectById(project_id: number, user_id: number): Promise<Project> {
+    try {
+      const proj = await this.projectRepository.findOne({
+        where: {
+          id: project_id,
+          user_id: user_id,
+        },
+        relations: {
+          task: true,
+        },
+      });
+      return proj;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
   }
 }

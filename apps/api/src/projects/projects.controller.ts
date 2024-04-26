@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from './entities/projects.entity';
@@ -23,5 +23,13 @@ export class ProjectsController {
     @AuthUser() user: User,
   ): Promise<Project> {
     return this.projectsService.updateProject(updateProjectDto, user);
+  }
+
+  @Get('/projects')
+  async findProjectById(
+    @Query('id') id: number,
+    @AuthUser() user: User,
+  ): Promise<Project> {
+    return this.projectsService.findProjectById(id, user.id);
   }
 }
