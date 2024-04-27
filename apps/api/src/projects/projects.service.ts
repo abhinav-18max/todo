@@ -59,4 +59,18 @@ export class ProjectsService {
       return e;
     }
   }
+
+  async allprojects(user_id: number): Promise<Project[]> {
+    try {
+      const proj = await this.projectRepository.find({
+        where: {
+          user_id: user_id,
+        },
+      });
+      return proj;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
+  }
 }

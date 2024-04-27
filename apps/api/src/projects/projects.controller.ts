@@ -11,9 +11,12 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
   @Post('/create')
   async createProject(
-    @Body() createProjectDto: CreateProjectDto,
     @AuthUser() user: User,
+    @Body() createProjectDto: CreateProjectDto,
   ): Promise<Project> {
+    console.log('createProject');
+    console.log(user);
+    console.log(createProjectDto);
     return this.projectsService.createProject(createProjectDto, user);
   }
 
@@ -31,5 +34,10 @@ export class ProjectsController {
     @AuthUser() user: User,
   ): Promise<Project> {
     return this.projectsService.findProjectById(id, user.id);
+  }
+
+  @Get('/allprojects')
+  async allprojects(@AuthUser() user: User): Promise<Project[]> {
+    return this.projectsService.allprojects(user.id);
   }
 }

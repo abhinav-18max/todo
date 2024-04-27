@@ -34,6 +34,19 @@ export class AuthController {
     res.send(req.user);
   }
 
+  @UseGuards(AuthenticatedGuard)
+  @Get('logout')
+  logout(@Session() session: Record<string, any>, @Res() res: Response) {
+    console.log(session.id);
+    session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error' });
+      }
+      res.clearCookie('connect.sid');
+      return res.status(200).json({ message: 'User logged out' });
+    });
+  }
+
   @UseGuards(AuthenticatedGuard) @Get('profile') getProfile() {
     return 'profile';
   }
