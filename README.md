@@ -67,3 +67,7 @@ pnpm run dev
 - Homepage http://localhost:3000/home
 - Each Project view page http://localhost:3000/view?id=1
 
+### Workflow screenshots are attached
+- In the workflow screenshot directory
+
+
