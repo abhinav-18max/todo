@@ -62,8 +62,8 @@ pnpm run dev
 
 
 ### Major Routes
-SignIn http://localhost:3000/
-SignUp http://localhost:3000/
-Homepage http://localhost:3000/home
-Each Project view page http://localhost:3000/view?id=1
+- SignIn http://localhost:3000/signin
+- SignUp http://localhost:3000/signup
+- Homepage http://localhost:3000/home
+- Each Project view page http://localhost:3000/view?id=1
 
