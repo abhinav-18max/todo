@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
 import entities from './typeorm';
 import * as process from 'node:process';
-import { parse } from 'ts-jest';
 
 export const Appdatasource = new DataSource({
   type: 'postgres',

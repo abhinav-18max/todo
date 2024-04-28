@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -7,7 +8,8 @@ export class AuthService {
 
   async validateUser(email: string, passowrd: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
-    if (user && user.password === passowrd) {
+    // console.log(email);
+    if (user && (await bcrypt.compare(passowrd, user.password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...rest } = user;
 

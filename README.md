@@ -23,6 +23,31 @@ This Turborepo has some additional tools already setup for you:
 
 ### Enviornment Viariables
 
+Backend
+```
+cd todo
+cd apps/api/
+mkdir .env
+# copy below content
+SECRET=
+HOST=
+PORT=
+PASSWORD=
+USERNAME=
+DATABASE=
+```
+Frontend
+```
+cd todo
+cd apps/web/
+mkdir .env.locaal
+
+#copy below content
+NEXT_PUBLIC_API_ROUTE="http://localhost:5001"
+
+
+```
+
 
 ### To run 
 

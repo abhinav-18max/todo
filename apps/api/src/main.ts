@@ -6,6 +6,7 @@ import * as session from 'express-session';
 import { SessionEntity } from './utils/typeorm/entities/session';
 import { TypeormStore } from 'connect-typeorm';
 import { Appdatasource } from './utils/appdatasource';
+import * as process from 'node:process';
 
 async function bootstrap() {
   if (Appdatasource.isInitialized === false) await Appdatasource.initialize();
@@ -18,7 +19,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'my-secret',
+      secret: process.env.SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 3600000 },
