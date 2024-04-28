@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/projects.entity';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { User } from '../user/entities/user.entity';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import * as fs from 'node:fs';
 
 @Injectable()
 export class ProjectsService {
@@ -68,6 +70,42 @@ export class ProjectsService {
         },
       });
       return proj;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async download(project_id: number, path: string) {
+    try {
+      const proj = await this.projectRepository.findOne({
+        where: {
+          id: project_id,
+        },
+        relations: {
+          task: true,
+        },
+      });
+      let markdownContent = `# ${proj.name}\n`;
+      markdownContent += `Summary: ${proj.completed}/${proj.total} todos completed \n`;
+      markdownContent += `Pending \n`;
+      proj.task.map((e) => {
+        if (e.status === false) {
+          markdownContent += `- ${e.name} \n`;
+        }
+      });
+      markdownContent += `Completed \n`;
+      proj.task.map((e) => {
+        if (e.status === true) {
+          markdownContent += `- ${e.name} \n`;
+        }
+      });
+
+      const filepath = `../../${path}/${proj.name}.md`;
+      fs.writeFileSync(filepath, markdownContent);
+
+      return markdownContent;
     } catch (e) {
       console.log(e);
       return e;

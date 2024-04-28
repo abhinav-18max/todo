@@ -13,15 +13,17 @@ export class TaskService {
     @InjectRepository(Project) private projectRepository: Repository<Project>,
   ) {}
 
-  async createTask(task: CreateTaskDto): Promise<Project> {
+  async createTask(task: CreateTaskDto, user_id: number): Promise<Project> {
     try {
       const task_ = new Task();
       task_.name = task.name;
+      task_.description = task.description;
+      task_.status = task.status;
       const newtask = await this.taskRepository.save(task_);
       const project = await this.projectRepository.findOne({
         where: {
           id: task.project_id,
-          user_id: task.user_id,
+          user_id: user_id,
         },
         relations: {
           task: true,
@@ -29,6 +31,12 @@ export class TaskService {
       });
       console.log(project);
       project.task.push(newtask);
+      if (newtask.status) {
+        project.completed += 1;
+        project.total += 1;
+      } else {
+        project.total += 1;
+      }
       return await this.projectRepository.save(project);
     } catch (e) {
       console.log(e);
@@ -45,21 +53,57 @@ export class TaskService {
       task.name = updateTaskdto.name;
       task.description = updateTaskdto.description;
       task.status = updateTaskdto.status;
-      return await this.taskRepository.save(task);
+      const oldtask = await this.taskRepository.findOne({
+        where: {
+          id: updateTaskdto.id,
+        },
+      });
+      const newtask = await this.taskRepository.save(task);
+      const project = await this.projectRepository.findOne({
+        where: {
+          id: updateTaskdto.project_id,
+        },
+        relations: {
+          task: true,
+        },
+      });
+      project.task.push(newtask);
+      if (newtask.status === true && oldtask.status === false) {
+        project.completed += 1;
+      } else if (oldtask.status === true && newtask.status === false) {
+        project.completed -= 1;
+      }
+      await this.projectRepository.save(project);
+      return newtask;
     } catch (e) {
       console.log(e);
       return e;
     }
   }
 
-  async delete(task_id: number) {
+  async delete(task_id: number, project_id: number) {
     try {
-      const task = await this.taskRepository.findOne({
+      const newtask = await this.taskRepository.findOne({
         where: {
           id: task_id,
         },
       });
-      return await this.taskRepository.remove(task);
+      const project = await this.projectRepository.findOne({
+        where: {
+          id: project_id,
+        },
+        relations: {
+          task: true,
+        },
+      });
+      if (newtask.status) {
+        project.completed -= 1;
+        project.total -= 1;
+      } else {
+        project.total -= 1;
+      }
+      await this.projectRepository.save(project);
+      return await this.taskRepository.remove(newtask);
     } catch (e) {
       console.log(e);
       return e;

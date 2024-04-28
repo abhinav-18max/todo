@@ -5,6 +5,7 @@ import { Project } from './entities/projects.entity';
 import { AuthUser } from '../utils/decorators/AuthUser.decorator';
 import { User } from '../user/entities/user.entity';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { DownloadDto } from './dto/download.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -38,6 +39,13 @@ export class ProjectsController {
 
   @Get('/allprojects')
   async allprojects(@AuthUser() user: User): Promise<Project[]> {
+    console.log('hiii');
     return this.projectsService.allprojects(user.id);
+  }
+
+  @Post('/download')
+  async download(@Body() download: DownloadDto) {
+    console.log(download);
+    return this.projectsService.download(download.id, download.path);
   }
 }

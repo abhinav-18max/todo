@@ -1,11 +1,10 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class UpdateProjectDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
+export class DownloadDto {
   @IsNumber()
   @IsNotEmpty()
   id: number;
+  @IsString()
+  @IsNotEmpty()
+  path: string;
 }

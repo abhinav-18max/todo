@@ -12,6 +12,7 @@ import Link from "next/link";
 export default  function  Home(){
     const API_URL = process.env.NEXT_PUBLIC_API_ROUTE
     const [loading,setLoading] =useState(false)
+    const [ChangeLoading,setChangeLoading] =useState(false)
     const{data:session,status} =useSession()
     const queryClient= new QueryClient()
     const proj_name=useRef<HTMLInputElement|undefined>()
@@ -87,6 +88,10 @@ export default  function  Home(){
             </div>
         </div>
         <div className="h-screen flex flex-col justify-center items-center">
+            {ChangeLoading
+                && <div className="flex flex-row justify-center items-center text-xl font-extrabold">
+                Loading ...{" "}
+        </div>}
             <div className="flex flex-row justify-center items-center space-x-2.5">
                 <Input className="rounded-xl bg-white shadow-xl border-0" ref={proj_name}></Input>
                 <Button className="bg-black  hover:bg-black rounded-xl text-white" onClick={()=>click.mutateAsync()}>Create</Button>
@@ -94,9 +99,9 @@ export default  function  Home(){
             <div className="flex flex-wrap">
 
                 {data.map((item:any )=>{
-                    key=item.id
+
                     return (
-                        <div className="m-4 h-fit w-fit p-9 bg-white rounded-2xl shadow-2xl">
+                        <div key={item.id} className="m-4 h-fit w-fit p-9 bg-white rounded-2xl shadow-2xl">
                             <div className=" h-full flex flex-col justify-center items-center">
                                 <h1 className="text-black text-2xl font-extrabold underline-offset-2">
                                     {item.name}
@@ -106,7 +111,7 @@ export default  function  Home(){
                                 </h3>
                                 <div>
                                     <Button
-                                        className="bg-white mt-5 hover:bg-white border-2 border-gray-950 rounded-xl text-black"><Link href={{pathname:"/view",query:{id:item.id}}}>Edit</Link></Button>
+                                        className="bg-white mt-5 hover:bg-white border-2 border-gray-950 rounded-xl text-black" onClick={()=>setChangeLoading(true)}><Link href={{pathname:"/view",query:{id:item.id}}}>Edit</Link></Button>
                                 </div>
 
                             </div>
